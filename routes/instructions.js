@@ -20,8 +20,9 @@ router.post("/", async (req, res) => {
   const { usernameTg, id, language_code } = verifyInitData(
     telegramData.initData
   );
-
-  try {
+  const user = await userService.getUser(id)
+  
+  if (!user) {
     await userService.createUser({
       _id: id,
       tgName: usernameTg,
@@ -31,10 +32,11 @@ router.post("/", async (req, res) => {
     req.session.userId = id;
     req.session.usernameTg = usernameTg;
     req.session.language_code = language_code;
-    return res.send("truth");
-  } catch (err) {
-    return res.send("error");
-  }
+    return res.send("success")
+  } 
+  req.session.userId = id  
+  return res.send("success2")
+ 
 });
 
 module.exports = router;
